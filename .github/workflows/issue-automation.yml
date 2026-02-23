@@ -1,0 +1,40 @@
+name: Issue Label Automation
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  comment-on-bug:
+    if: github.event.label.name == 'bug'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Comment on bug issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for reporting this bug. Our team will investigate and fix it.'
+            })
+
+  comment-on-wontfix:
+    if: github.event.label.name == 'wontfix'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Comment on wontfix issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'After review, we have decided not to address this issue at this time.'
+            })
